@@ -15,7 +15,7 @@ RUN apk --no-cache --no-progress upgrade && \
     sed -i 's|^;* *\(default case = \).*|   \1lower|' $file && \
     sed -i '/Share Definitions/,$d' $file && \
     echo '   pam password change = yes' >>$file && \
-    echo '   map to guest = bad user' >>$file && \
+    echo '   map to guest = never' >>$file && \
     echo '   usershare allow guests = yes' >>$file && \
     echo '   create mask = 0777' >>$file && \
     echo '   force create mode = 0777' >>$file && \
