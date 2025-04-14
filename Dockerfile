@@ -17,5 +17,5 @@ HEALTHCHECK --interval=60s --timeout=15s \
 
 VOLUME ["/etc", "/var/cache/samba", "/var/lib/samba", "/var/log/samba",\
             "/run/samba"]
-
-ENTRYPOINT ["/sbin/tini", "--","ionice", "-c", "3", "smbd", "-FS", "--no-process-group"]
+COPY samba.sh /usr/bin/
+ENTRYPOINT ["/sbin/tini", "--", "/usr/bin/samba.sh"]
