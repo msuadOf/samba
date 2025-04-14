@@ -4,53 +4,6 @@ MAINTAINER David Personette <dperson@gmail.com>
 # Install samba
 RUN apk --no-cache --no-progress upgrade && \
     apk --no-cache --no-progress add bash samba shadow tini tzdata && \
-    file="/etc/samba/smb.conf" && \
-    sed -i 's|^;* *\(log file = \).*|   \1/dev/stdout|' $file && \
-    sed -i 's|^;* *\(load printers = \).*|   \1no|' $file && \
-    sed -i 's|^;* *\(printcap name = \).*|   \1/dev/null|' $file && \
-    sed -i 's|^;* *\(printing = \).*|   \1bsd|' $file && \
-    sed -i 's|^;* *\(unix password sync = \).*|   \1no|' $file && \
-    sed -i 's|^;* *\(preserve case = \).*|   \1yes|' $file && \
-    sed -i 's|^;* *\(short preserve case = \).*|   \1yes|' $file && \
-    sed -i 's|^;* *\(default case = \).*|   \1lower|' $file && \
-    sed -i '/Share Definitions/,$d' $file && \
-    echo '   pam password change = yes' >>$file && \
-    echo '   map to guest = never' >>$file && \
-    echo '   usershare allow guests = yes' >>$file && \
-    echo '   create mask = 0777' >>$file && \
-    echo '   force create mode = 0777' >>$file && \
-    echo '   directory mask = 0777' >>$file && \
-    echo '   force directory mode = 0777' >>$file && \
-    echo '   force user = root' >>$file && \
-    echo '   force group = root' >>$file && \
-    echo '   follow symlinks = yes' >>$file && \
-    echo '   load printers = no' >>$file && \
-    echo '   printing = bsd' >>$file && \
-    echo '   printcap name = /dev/null' >>$file && \
-    echo '   disable spoolss = yes' >>$file && \
-    echo '   strict locking = no' >>$file && \
-    echo '   aio read size = 0' >>$file && \
-    echo '   aio write size = 0' >>$file && \
-    echo '   vfs objects = catia fruit recycle streams_xattr' >>$file && \
-    echo '   recycle:keeptree = yes' >>$file && \
-    echo '   recycle:maxsize = 0' >>$file && \
-    echo '   recycle:repository = .deleted' >>$file && \
-    echo '   recycle:versions = yes' >>$file && \
-    echo '' >>$file && \
-    echo '   # Security' >>$file && \
-    echo '   client ipc max protocol = SMB3' >>$file && \
-    echo '   client ipc min protocol = SMB2_10' >>$file && \
-    echo '   client max protocol = SMB3' >>$file && \
-    echo '   client min protocol = SMB2_10' >>$file && \
-    echo '   server max protocol = SMB3' >>$file && \
-    echo '   server min protocol = SMB2_10' >>$file && \
-    echo '' >>$file && \
-    echo '   # Time Machine' >>$file && \
-    echo '   fruit:delete_empty_adfiles = yes' >>$file && \
-    echo '   fruit:time machine = yes' >>$file && \
-    echo '   fruit:veto_appledouble = no' >>$file && \
-    echo '   fruit:wipe_intentionally_left_blank_rfork = yes' >>$file && \
-    echo '' >>$file && \
     echo -e "123424\n123424" | smbpasswd -s -a root && \
     useradd zz && echo -e "123424\n123424" | smbpasswd -s -a  zz  && \
     rm -rf /tmp/*
@@ -65,4 +18,4 @@ HEALTHCHECK --interval=60s --timeout=15s \
 VOLUME ["/etc", "/var/cache/samba", "/var/lib/samba", "/var/log/samba",\
             "/run/samba"]
 
-ENTRYPOINT ["ionice", "-c", "3", "smbd", "-FS", "--no-process-group"]
+ENTRYPOINT ["tini","--","ionice", "-c", "3", "smbd", "-FS", "--no-process-group"]
