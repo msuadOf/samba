@@ -63,4 +63,4 @@ HEALTHCHECK --interval=60s --timeout=15s \
 VOLUME ["/etc", "/var/cache/samba", "/var/lib/samba", "/var/log/samba",\
             "/run/samba"]
 
-ENTRYPOINT ["exec", "ionice", "-c", "3", "smbd", "-FS", "--no-process-group"]
+ENTRYPOINT ["ionice", "-c", "3", "smbd", "-FS", "--no-process-group"]
